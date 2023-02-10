@@ -9,6 +9,7 @@ export default{
   name: 'App',
   data(){
     return{
+      apiKey: '296f378afb1648d5b0435a1dfe28b900',
       map: null,
       marker: null,
       userIp: null,
@@ -21,7 +22,7 @@ export default{
       zip: '',
       timezone: '',
       isp: '',
-      apiUrl: 'http://ip-api.com/json/'
+      apiUrl: 'https://api.ipgeolocation.io/ipgeo?apiKey='
     }
   },
   methods:{
@@ -40,17 +41,17 @@ export default{
       this.marker.addTo(this.map);
     },
     findLocations(ip){
-      fetch(this.apiUrl + ip)
+      fetch(this.apiUrl + this.apiKey + '&ip=' + ip)
         .then((response) => response.json())
         .then((response) => {
           console.log(response);
-          this.center[0] = response.lat;
-          this.center[1] = response.lon;
-          this.searchedIp = response.query;
+          this.center[0] = response.latitude;
+          this.center[1] = response.longitude;
+          this.searchedIp = response.ip;
           this.city = response.city;
-          this.state = response.countryCode;
-          this.zip = response.zip;
-          this.timezone = this.formatTimezoneToUTC(response.timezone);
+          this.state = response.country_code2;
+          this.zip = response.zipcode;
+          this.timezone = this.formatTimezoneToUTC(response.time_zone.name);
           this.isp = response.isp;
           if(!this.alreadyCreated){
             this.createMap();
